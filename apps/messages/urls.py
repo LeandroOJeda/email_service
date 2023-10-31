@@ -5,6 +5,6 @@ from apps.messages.views import MessageViewSet
 
 urlpatterns = [
     path(
-        "", MessageViewSet.as_view({"post": "create"})
+        "send_mail/", MessageViewSet.as_view({"post": "create"})
     )
 ]

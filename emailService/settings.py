@@ -204,4 +204,4 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
-EMAIL_BACKEND = 'utils.multi_smtp_config.FallbackEmailBackend'
+EMAIL_BACKEND = 'apps.utils.multi_smtp_config.FallbackEmailBackend'
