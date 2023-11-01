@@ -5,21 +5,6 @@ import logging
 logger = logging.getLogger()
 
 
-class IsSuperUser(BasePermission):
-    """
-    Allows access only to super users.
-    """
-
-    def has_permission(self, request, view):
-        jwt_authenticator = JWTAuthentication()
-        response = jwt_authenticator.authenticate(request)
-        if response is not None:
-            _user, token = response
-            return bool(token.payload["access_level"] == 0)
-        else:
-            return False
-
-
 class IsUser(BasePermission):
     """
     Allows access to users.
@@ -35,20 +20,6 @@ class IsUser(BasePermission):
             return False
 
 
-class IsTeacher(BasePermission):
-    """
-    Allows access only to teacher users.
-    """
-
-    def has_permission(self, request, view):
-        jwt_authenticator = JWTAuthentication()
-        response = jwt_authenticator.authenticate(request)
-        if response is not None:
-            _user, token = response
-            return bool(token.payload["access_level"] == 2)
-        else:
-            return False
-
 
 class IsAdministrative(BasePermission):
     """
@@ -60,7 +31,7 @@ class IsAdministrative(BasePermission):
         response = jwt_authenticator.authenticate(request)
         if response is not None:
             _user, token = response
-            return bool(token.payload["access_level"] == 3)
+            return bool(token.payload["access_level"] == 2)
         else:
             return False
 

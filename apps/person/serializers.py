@@ -24,7 +24,7 @@ class WithRelationsPersonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        exclude = ["password", "is_active"]
+        exclude = ["email", "groups", "user_permissions", "password"]
 
 
 class CreateUpdatePersonSerializer(serializers.ModelSerializer):
@@ -55,26 +55,3 @@ class CreateUpdatePersonSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-    
-class ChangePasswordPersonSerializer(serializers.Serializer):
-    password_old = serializers.CharField(required=True)
-    password_new = serializers.CharField(required=True)
-
-    def validate_password_old(self, value):
-        usr = self.context["request"].user
-        if not usr.check_password(value):
-            raise serializers.ValidationError("Wrong password")
-        return value
-
-    def validate(self, data):
-        if data["password_new"] == data["password_old"]:
-            raise serializers.ValidationError("New password must not be the same")
-        return data
-
-
-class PersonRolesSerializer(RoleSerializer):
-    role = serializers.IntegerField
-
-    class Meta:
-        model = Person
-        fields = ["role"]

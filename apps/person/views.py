@@ -9,20 +9,18 @@ from apps.person.models import Person
 from apps.roles.models import Role
 from apps.validation.serializers import CustomTokenObtainPairSerializer
 from apps.person.serializers import (
-    ChangePasswordPersonSerializer,
     WithRelationsPersonSerializer,
     CreateUpdatePersonSerializer,
     BriefPersonSerializer,
-    PersonRolesSerializer,
 )
-from apps.utils.permissions import IsAdministrative, IsSelf, IsSuperUser, IsTeacher
+from apps.utils.permissions import IsAdministrative, IsSelf
 
 
 logger = logging.getLogger()
 
 
 class PersonViewSet(ModelViewSet):
-    search_fields = ["first_name", "last_name", "username", "dni"]
+    search_fields = ["first_name", "last_name", "username"]
     ordering_fields = ["first_name", "last_name", "username"]
     ordering = ["last_name"]
 
@@ -31,35 +29,25 @@ class PersonViewSet(ModelViewSet):
             return CreateUpdatePersonSerializer
         elif self.action == "retrieve" or self.action == "retrieve_me":
             return WithRelationsPersonSerializer
-        elif self.action == "change_password":
-            return ChangePasswordPersonSerializer
         elif self.action == "create" or self.action == "update":
             self.request.action = self.action
             return CreateUpdatePersonSerializer
-        elif self.action == "add_role" or self.action == "remove_role":
-            return PersonRolesSerializer
+        elif self.action == "stats":
+            return WithRelationsPersonSerializer
         else:
             return BriefPersonSerializer
 
     def get_permissions(self):
-        if self.action in (
-            "create",
-            "password_reset_request",
-            "password_reset_make",
-            "activate",
-            "verify_email",
-            "pre_verify_cuit",
-        ):
+        if self.action == "create":
             self.permission_classes = [AllowAny]
-        elif self.action in ("update", "change_password", "retrieve"):
-            self.permission_classes = [IsSuperUser | IsSelf]
+        elif self.action in ("update", "retrieve"):
+            self.permission_classes = [IsAdministrative | IsSelf]
         elif self.action in "list":
-            self.permission_classes = [
-                IsSuperUser | IsTeacher | IsAdministrative]
+            self.permission_classes = [IsAdministrative]
         elif self.action == "destroy":
-            self.permission_classes = [IsSuperUser]
-        elif self.action in ("add_role", "remove_role"):
-            self.permission_classes = [IsSuperUser]
+            self.permission_classes = [IsAdministrative]
+        elif self.action == "stats":
+            self.permission_classes = [IsAdministrative]
         return super().get_permissions()
 
     def get_object(self):
@@ -75,6 +63,7 @@ class PersonViewSet(ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
         # Create token temporary
         token = CustomTokenObtainPairSerializer.get_token(serializer.instance)
         data: dict = WithRelationsPersonSerializer(
@@ -99,22 +88,12 @@ class PersonViewSet(ModelViewSet):
         instance = get_object_or_404(queryset, pk=self.request.user.id)
         serializer = self.get_serializer(instance)
         return Response(serializer.retrive_me_format_data())
+    
+    def stats(self, request):
+        filtered_persons = Person.objects.all().filter(daily_messages__gt=0)
+        serializer = self.get_serializer(filtered_persons, many=True)
 
-    @action(methods=["put"], detail=True)
-    def change_password(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        usr = self.request.user
-        usr.set_password(serializer.validated_data.get("password_new"))
-        usr.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-    @action(methods=["put"], detail=True)
-    def change_email(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.data)
 
 
     @action(methods=["post"], detail=True)
