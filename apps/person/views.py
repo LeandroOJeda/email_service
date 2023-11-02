@@ -20,6 +20,7 @@ logger = logging.getLogger()
 
 
 class PersonViewSet(ModelViewSet):
+    queryset = Person.objects.all()
     search_fields = ["first_name", "last_name", "username"]
     ordering_fields = ["first_name", "last_name", "username"]
     ordering = ["last_name"]
@@ -87,7 +88,7 @@ class PersonViewSet(ModelViewSet):
         queryset = self.get_queryset()
         instance = get_object_or_404(queryset, pk=self.request.user.id)
         serializer = self.get_serializer(instance)
-        return Response(serializer.retrive_me_format_data())
+        return Response(serializer.data)
     
     def stats(self, request):
         filtered_persons = Person.objects.all().filter(daily_messages__gt=0)

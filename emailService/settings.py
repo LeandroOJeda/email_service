@@ -101,13 +101,13 @@ WSGI_APPLICATION = 'emailService.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         "NAME": getenv("DB_DATABASE"),
         "USER": getenv("DB_USR"),
         "PASSWORD": getenv("DB_PWD"),
         "HOST": getenv("DB_HOST"),
         'PORT': getenv("DB_PORT"),
-        'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
+        # 'OPTIONS': {'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"},
     }
 }
 
@@ -205,3 +205,9 @@ SIMPLE_JWT = {
 }
 
 EMAIL_BACKEND = 'apps.utils.multi_smtp_config.FallbackEmailBackend'
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Bearer": {"type": "apiKey", "name": "Authorization", "in": "header"}
+    }
+}
