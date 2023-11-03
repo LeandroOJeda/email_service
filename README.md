@@ -43,3 +43,7 @@ ENV DB_PWD=password
 ENV DB_HOST=db
 ENV DB_PORT=3306
 ```
+
+## URL de despliegue
+
+El proyecto ha sido desplegado en Google Cloud y está disponible en la siguiente URL: [https://email-service-tmosb7v4qq-ue.a.run.app/](https://email-service-tmosb7v4qq-ue.a.run.app/)
