@@ -15,5 +15,5 @@ steps:
    - 'gcr.io/$PROJECT_ID/email-service:$COMMIT_SHA'
    - '--region'
    - 'us-east1'
- images:
+images:
  - 'gcr.io/$PROJECT_ID/email-service:$COMMIT_SHA'
