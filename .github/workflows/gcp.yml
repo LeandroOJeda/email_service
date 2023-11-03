@@ -1,11 +1,11 @@
 
-name: build and push python image to google cloud platform
+name: build, push and deploy python image to google cloud platform
 on:
   push:
     branches: [main]
 jobs:
   build-push-gcr:
-    name: Build and Push to gcp
+    name: Build, Push and Deply to gcp
     runs-on: ubuntu-latest
     env:
       PROJECT_ID: axiomatic-sonar-403918
