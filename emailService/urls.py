@@ -30,6 +30,7 @@ urlpatterns = [
     path("validation/", include("apps.validation.urls")),
     path("persons/", include("apps.person.urls")),
     path("message/", include("apps.messages.urls")),
+    path("role/", include("apps.roles.urls")),
     re_path(
         r"^swagger/$",
         schema_view.with_ui("swagger", cache_timeout=0),
