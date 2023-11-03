@@ -50,15 +50,3 @@ jobs:
         docker tag $IMAGE_NAME:latest us-east1-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_NAME:$GIT_TAG
         docker push us-east1-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_NAME:latest
         docker push us-east1-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_NAME:$GIT_TAG
-
-    - name: Deploy container image to cloud run
-      args:
-      - "run"
-      - "deploy"
-      - "email-service"
-      - "--image"
-      - "gcr.io/$PROJECT_ID/email-service:$COMMIT_SHA"
-      - "--region"
-      - "us-east1"
-    images:
-    - "gcr.io/$PROJECT_ID/email-service:$COMMIT_SHA"
