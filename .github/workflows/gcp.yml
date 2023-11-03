@@ -1,4 +1,3 @@
-
 name: build, push and deploy python image to google cloud platform
 on:
   push:
@@ -53,4 +52,4 @@ jobs:
 
     - name: Deploy to GCP
       run: |-
-        gcloud run deploy email-service --image gcr.io/$PROJECT_ID/$IMAGE_NAME:latest --region us-east1 --platform managed
+        gcloud run deploy email-service --image gcr.io/$PROJECT_ID/$IMAGE_NAME:latest --region us-east1 --platform managed --set-env-vars DB_DATABASE=$(gcloud secrets versions access latest --secret=projects/102991584914/secrets/secrets/versions/1),DB_USR=$(gcloud secrets versions access latest --secret=projects/102991584914/secrets/secrets/versions/1),DB_PWD=$(gcloud secrets versions access latest --secret=projects/102991584914/secrets/secrets/versions/1),DB_HOST=$(gcloud secrets versions access latest --secret=projects/102991584914/secrets/secrets/versions/1),SPARKPOST_PASSWORD=$(gcloud secrets versions access latest --secret=projects/102991584914/secrets/secrets/versions/1),ELASTICEMAIL_PASSWORD=$(gcloud secrets versions access latest --secret=projects/102991584914/secrets/secrets/versions/1)
