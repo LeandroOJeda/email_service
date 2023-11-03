@@ -41,5 +41,5 @@ class FallbackEmailBackend:
             except Exception as e:
                 print(f"Error al enviar el correo electrónico con el backend {i}: {e}")
         print("Todos los backends han fallado.")
-        return 0
+        raise Exception("Todos los backends han fallado.")
 
